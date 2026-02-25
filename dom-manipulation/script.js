@@ -42,7 +42,6 @@ function populateCategories() {
     filter.appendChild(option);
   });
 
-  // Restore last selected category
   selectedCategory = localStorage.getItem("lastCategoryFilter") || "all";
   filter.value = selectedCategory;
 }
@@ -151,20 +150,8 @@ function importFromJsonFile(event) {
 
 const SERVER_URL = 'https://jsonplaceholder.typicode.com/posts';
 
-async function postQuoteToServer(quote) {
-  try {
-    await fetch(SERVER_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(quote)
-    });
-    console.log("Quote posted to server:", quote);
-  } catch (err) {
-    console.error("Failed to post quote:", err);
-  }
-}
-
-async function fetchServerQuotes() {
+// Fetch quotes from server (ALX requires exact function name)
+async function fetchQuotesFromServer() {
   try {
     const response = await fetch(SERVER_URL);
     if (!response.ok) throw new Error("Network response not ok");
@@ -174,15 +161,30 @@ async function fetchServerQuotes() {
       category: item.userId ? `User${item.userId}` : "Uncategorized"
     }));
   } catch (err) {
-    console.error("Fetch server quotes failed:", err);
+    console.error("Fetch quotes from server failed:", err);
     return [];
   }
 }
 
+// Post a single quote to server
+async function postQuoteToServer(quote) {
+  try {
+    await fetch(SERVER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(quote)
+    });
+  } catch (err) {
+    console.error("Post to server failed:", err);
+  }
+}
+
+// Sync quotes with server (ALX requires exact function name)
 async function syncQuotes() {
-  const serverQuotes = await fetchServerQuotes();
+  const serverQuotes = await fetchQuotesFromServer();
   let updated = false;
 
+  // Conflict resolution: server takes precedence
   if (JSON.stringify(serverQuotes) !== JSON.stringify(quotes)) {
     quotes = serverQuotes;
     saveQuotes();
@@ -191,14 +193,17 @@ async function syncQuotes() {
     updated = true;
   }
 
+  // POST all local quotes to server
   for (const quote of quotes) {
     await postQuoteToServer(quote);
   }
 
-  if (updated) alert("Quotes synced with server. Conflicts resolved (server data took precedence).");
+  if (updated) {
+    alert("Quotes synced with server. Conflicts resolved (server data took precedence).");
+  }
 }
 
-// Periodically sync every 30 seconds
+// Periodically sync with server every 30 seconds
 setInterval(syncQuotes, 30000);
 syncQuotes();
 
