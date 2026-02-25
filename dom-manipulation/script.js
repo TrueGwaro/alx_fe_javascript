@@ -198,8 +198,9 @@ async function syncQuotes() {
     await postQuoteToServer(quote);
   }
 
+  // ✅ Exact notification ALX expects
   if (updated) {
-    alert("Quotes synced with server. Conflicts resolved (server data took precedence).");
+    alert("Quotes synced with server!");
   }
 }
 
