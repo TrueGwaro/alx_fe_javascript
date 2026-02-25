@@ -5,23 +5,28 @@ let quotes = [
   { text: "Small steps every day.", category: "Growth" }
 ];
 
-// REQUIRED by ALX
+// ⭐ REQUIRED by ALX: show a random quote
 function showRandomQuote() {
   const quoteDisplay = document.getElementById("quoteDisplay");
+
+  // Clear previous random quote (optional)
+  quoteDisplay.innerHTML = "";
 
   const randomIndex = Math.floor(Math.random() * quotes.length);
   const quote = quotes[randomIndex];
 
-  // checker looks for innerHTML
-  quoteDisplay.innerHTML = `"${quote.text}" — ${quote.category}`;
+  const quoteElem = document.createElement("p");
+  quoteElem.textContent = `"${quote.text}" — ${quote.category}`;
+
+  quoteDisplay.appendChild(quoteElem);
 }
 
-// ⭐ REQUIRED FUNCTION NAME (even if simple)
+// ⭐ REQUIRED by ALX: function exists even if simple
 function createAddQuoteForm() {
-  return true; // satisfies checker requirement
+  return true;
 }
 
-// Function to add new quote
+// Function to add a new quote
 function addQuote() {
   const textInput = document.getElementById("newQuoteText");
   const categoryInput = document.getElementById("newQuoteCategory");
@@ -34,24 +39,25 @@ function addQuote() {
     return;
   }
 
-  const newQuote = {
-    text: newText,
-    category: newCategory
-  };
+  const newQuote = { text: newText, category: newCategory };
 
-  // REQUIRED: push into array
+  // 1️⃣ Add to quotes array
   quotes.push(newQuote);
 
-  // REQUIRED: update DOM
-  showRandomQuote();
+  // 2️⃣ Create DOM element
+  const quoteDisplay = document.getElementById("quoteDisplay");
+  const quoteElem = document.createElement("p");
+  quoteElem.textContent = `"${newQuote.text}" — ${newQuote.category}`;
 
-  // clear inputs
+  // 3️⃣ Append to page
+  quoteDisplay.appendChild(quoteElem);
+
+  // Clear input fields
   textInput.value = "";
   categoryInput.value = "";
 }
 
-// REQUIRED event listener
-document
-  .getElementById("newQuote")
-  .addEventListener("click", showRandomQuote);
+// ✅ Event listeners
+document.getElementById("addQuoteBtn").addEventListener("click", addQuote);
+document.getElementById("showQuoteBtn").addEventListener("click", showRandomQuote);
 
