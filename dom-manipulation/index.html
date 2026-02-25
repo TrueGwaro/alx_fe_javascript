@@ -6,6 +6,14 @@
 </div>
 
 <div>
+  <label for="categoryFilter">Filter by category:</label>
+  <select id="categoryFilter" onchange="filterQuotes()">
+    <option value="all">All Categories</option>
+    <!-- Dynamically populated categories -->
+  </select>
+</div>
+
+<div>
   <button id="exportBtn">Export Quotes (JSON)</button>
   <input type="file" id="importFile" accept=".json" />
 </div>
