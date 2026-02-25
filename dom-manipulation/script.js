@@ -1,5 +1,6 @@
 // Quotes array
 let quotes = [];
+let selectedCategory = "all"; // ✅ ALX requires this variable
 
 // ⭐ ALX-required function
 function createAddQuoteForm() {
@@ -12,6 +13,7 @@ function loadQuotes() {
   if (savedQuotes) {
     quotes = JSON.parse(savedQuotes);
   } else {
+    // Default quotes if none saved
     quotes = [
       { text: "Believe in yourself.", category: "Motivation" },
       { text: "Stay consistent.", category: "Success" },
@@ -25,12 +27,11 @@ function saveQuotes() {
   localStorage.setItem("quotes", JSON.stringify(quotes));
 }
 
-// Populate categories in the dropdown dynamically
+// Populate category dropdown dynamically
 function populateCategories() {
   const filter = document.getElementById("categoryFilter");
   const categories = [...new Set(quotes.map(q => q.category))];
 
-  // Clear old options except 'all'
   filter.innerHTML = '<option value="all">All Categories</option>';
 
   categories.forEach(cat => {
@@ -40,12 +41,12 @@ function populateCategories() {
     filter.appendChild(option);
   });
 
-  // Restore last selected category from localStorage
-  const lastFilter = localStorage.getItem("lastCategoryFilter") || "all";
-  filter.value = lastFilter;
+  // ✅ Restore last selected category from localStorage
+  selectedCategory = localStorage.getItem("lastCategoryFilter") || "all";
+  filter.value = selectedCategory;
 }
 
-// Display quotes in DOM (optionally filtered)
+// Display quotes in the DOM (optionally filtered)
 function displayQuotes(filteredQuotes = quotes) {
   const quoteDisplay = document.getElementById("quoteDisplay");
   quoteDisplay.innerHTML = "";
@@ -62,7 +63,7 @@ function displayQuotes(filteredQuotes = quotes) {
   });
 }
 
-// Show a random quote (ignores filtering)
+// Show a random quote
 function showRandomQuote() {
   if (quotes.length === 0) return alert("No quotes available.");
 
@@ -93,13 +94,12 @@ function addQuote() {
   quotes.push(newQuote);
   saveQuotes();
 
-  // Update category dropdown if new category
+  // Update categories dropdown
   populateCategories();
 
-  // Display filtered quotes based on current selection
+  // Refresh displayed quotes based on current filter
   filterQuotes();
 
-  // Clear inputs
   textInput.value = "";
   categoryInput.value = "";
 }
@@ -107,14 +107,15 @@ function addQuote() {
 // Filter quotes based on selected category
 function filterQuotes() {
   const filter = document.getElementById("categoryFilter");
-  const selected = filter.value;
+  selectedCategory = filter.value; // ✅ ALX requires this
 
-  localStorage.setItem("lastCategoryFilter", selected); // save preference
+  // Save selected category to localStorage
+  localStorage.setItem("lastCategoryFilter", selectedCategory);
 
-  if (selected === "all") {
+  if (selectedCategory === "all") {
     displayQuotes(quotes);
   } else {
-    const filtered = quotes.filter(q => q.category === selected);
+    const filtered = quotes.filter(q => q.category === selectedCategory);
     displayQuotes(filtered);
   }
 }
@@ -134,7 +135,7 @@ function exportQuotes() {
   URL.revokeObjectURL(url);
 }
 
-// Import quotes from JSON
+// Import quotes from JSON file
 function importFromJsonFile(event) {
   const reader = new FileReader();
   reader.onload = function(e) {
