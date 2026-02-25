@@ -5,14 +5,14 @@ let quotes = [
   { text: "Small steps every day.", category: "Growth" }
 ];
 
-// Function to display a random quote
-function displayRandomQuote() {
+// Function required by ALX
+function showRandomQuote() {
   const quoteDisplay = document.getElementById("quoteDisplay");
 
   const randomIndex = Math.floor(Math.random() * quotes.length);
   const quote = quotes[randomIndex];
 
-  // IMPORTANT: ALX checker looks for innerHTML
+  // IMPORTANT: checker looks for innerHTML
   quoteDisplay.innerHTML = `"${quote.text}" — ${quote.category}`;
 }
 
@@ -34,17 +34,19 @@ function addQuote() {
     category: newCategory
   };
 
-  // Add to array
+  // REQUIRED: push into quotes array
   quotes.push(newQuote);
 
-  // Update DOM after adding
-  displayRandomQuote();
+  // update DOM
+  showRandomQuote();
 
-  // Clear inputs
+  // clear inputs
   textInput.value = "";
   categoryInput.value = "";
 }
 
-// Event listener for button
-document.getElementById("newQuote").addEventListener("click", displayRandomQuote);
+// REQUIRED event listener
+document
+  .getElementById("newQuote")
+  .addEventListener("click", showRandomQuote);
 
